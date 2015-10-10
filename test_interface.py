@@ -10,3 +10,7 @@ def test_unicode_repr():
 def test_wait_disabling():
     interface.wait_for_input(disabled=True)
     assert "If we reach this point it works!"
+
+def test_pic_repr():
+    butts = interface.pic_repr((2, "of Spades"))
+    print(butts)

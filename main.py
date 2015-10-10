@@ -17,6 +17,13 @@
 import cards
 import interface
 
+exampleCards = cards.create_deck()
+for card in exampleCards:
+    picture = interface.pic_repr(card)
+    for line in picture:
+        print(line)
+    print()
+
 DISABLE_WAIT = True
 GAME_WON = False
 
