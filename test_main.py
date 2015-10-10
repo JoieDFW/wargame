@@ -1,49 +1,44 @@
+# coding=utf-8
+# War -> Tests -> Main
 
-import cards
+import main
 
-def test_create_deck():
-    deck = cards.create_deck()
-    assert type(deck) is list
-    assert len(deck) == 52
-    for card in deck:
-        assert type(card) is tuple
-        assert type(card[0]) is int
-        assert type(card[1]) is str
-        assert card[0] <= 13
-        assert card[0] >= 1
+def test_play_turn_human_win():
+    h_hand = [(2,), (5,), (8,), (12,)]
+    c_hand = [(8,), (4,), (10,), (2,)]
+    results = main.play_turn(h_hand, c_hand, [], [], [])
+    (h_hand, c_hand, h_reserve, c_reserve) = results
+    assert len(h_hand) == 3
+    assert len(c_hand) == 3
+    assert len(h_reserve) == 2
+    assert len(c_reserve) == 0
 
-def test_shuffle():
-    deck = cards.create_deck()
-    shuf = cards.shuffle_cards(deck)
-    assert deck != shuf
+def test_play_turn_human_win():
+    h_hand = [(2,), (5,), (8,), (2,)]
+    c_hand = [(8,), (4,), (10,), (11,)]
+    results = main.play_turn(h_hand, c_hand, [], [], [])
+    (h_hand, c_hand, h_reserve, c_reserve) = results
+    assert len(h_hand) == 3
+    assert len(c_hand) == 3
+    assert len(h_reserve) == 0
+    assert len(c_reserve) == 2
 
-def test_deal_cards():
-    deck = cards.create_deck()
-    inDeck = deck[:]
-    (hum, cpu) = cards.deal_cards(inDeck)
-    assert len(hum) == 26
-    assert len(cpu) == 26
-    assert deck == inDeck
+def test_play_turn_war():
+    h_hand = [(2,), (5,), (8,), (2,), (7,), (1,), (1,)]
+    c_hand = [(8,), (4,), (10,), (11,), (7,), (4,), (1,)]
+    results = main.play_turn(h_hand, c_hand, [], [], [])
+    (h_hand, c_hand, h_reserve, c_reserve) = results
+    assert len(h_hand) == 2
+    assert len(c_hand) == 2
+    assert len(h_reserve) == 0
+    assert len(c_reserve) == 10
 
-def test_get_top_card():
-    r_deck = cards.create_deck()
-    deck = r_deck[:]
-    card = cards.get_top_card(deck)
-    assert card == r_deck[-1]
-    assert r_deck != deck
-
-def test_get_top_card_multiple():
-    r_deck = cards.create_deck()
-    deck = r_deck[:]
-    hand = cards.get_top_card(deck, n=3)
-    assert len(hand) == 3
-    assert type(hand) is list
-    assert r_deck != deck
-    
-def test_compare_cards_normal_usage():
-    assert cards.compare_cards((4,), (7,)) == 1
-    assert cards.compare_cards((9,), (7,)) == -1
-    assert cards.compare_cards((5,), (5,)) == 0
-    assert cards.compare_cards((1,), (5,)) == -1
-    assert cards.compare_cards((13,), (1,)) == 1
-    assert cards.compare_cards((1,), (1,)) == 0
+def test_play_turn_double_war():
+    h_hand = [(2,), (5,), (8,), (2,), (7,), (1,), (10,), (5,), (3,)]
+    c_hand = [(8,), (4,), (10,), (11,), (7,), (4,), (1,), (5,), (3,)]
+    results = main.play_turn(h_hand, c_hand, [], [], [])
+    (h_hand, c_hand, h_reserve, c_reserve) = results
+    assert len(h_hand) == 0
+    assert len(c_hand) == 0
+    assert len(h_reserve) == 0
+    assert len(c_reserve) == 18
