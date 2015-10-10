@@ -11,7 +11,8 @@ def output(string="", outFn=print):
     """Print a message to the user. The print function can be overridden
     for testing, logging, or alternative interfaces."""
 
-    outFn(string, end="")
+    outFn(string, end=" ")
+    outFn()  # Prints a new line
 
 
 # Tested

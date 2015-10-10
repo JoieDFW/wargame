@@ -15,8 +15,7 @@
 import cards
 import interface
 
-IO = True
-WAIT_FOR_INPUT = True
+DISABLE_WAIT = False
 
 deck = cards.create_deck()
 deck = cards.shuffle_cards(deck)
@@ -25,25 +24,29 @@ hreserve = []
 creserve = []
 win = False
 
-interface.output()
+interface.wait_for_input(DISABLE_WAIT)
 
 while True:
     h = cards.get_top_card(hum)
     c = cards.get_top_card(cpu)
     
     result = cards.compare_cards(h, c)
-    interface.display_hand(h, c)
-    interface.output(wait=True)
+    interface.output("You draw {}, and your opponent shows {}.".format(h, c))
     pot = [h, c]
     
     if result == -1:
+        interface.output("{} > {} --- You win this round.".format(h, c))
         hreserve.extend(pot)
     elif result == 1:
+        interface.output("{} > {} --- You lose this round.".format(c, h))
         creserve.extend(pot)
     elif result == 0:
+        interface.output("There is a tie.")
         creserve.extend(pot)
     else:
         assert False, "You dun goofed"
+
+    interface.wait_for_input(DISABLE_WAIT)  # Set at the top of the script
 
     if len(hum) < 1:
         if len(hreserve) > 0:
@@ -61,8 +64,8 @@ while True:
             break
 
 if win:
-    print("You win! Well Done!")
+    interface.output("You win! Well Done!")
 else:
-    print("Sorry, you lost!")
+    interface.output("Sorry, you lost!")
 
 
