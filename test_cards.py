@@ -1,6 +1,7 @@
 # coding=utf-8
 # War -> Tests -> Cards
 
+import pytest
 import cards
 
 def test_create_deck():
@@ -27,20 +28,30 @@ def test_deal_cards():
     assert len(cpu) == 26
     assert deck == inDeck
 
-def test_get_top_card():
-    r_deck = cards.create_deck()
-    deck = r_deck[:]
-    card = cards.get_top_card(deck)
-    assert card == r_deck[-1]
-    assert r_deck != deck
+def test_flip_reserve():
+    (hand, reserve) = ([], [(2,), (5,), (11,)])
+    (n_hand, n_reserve) = cards.flip_reserve(hand, reserve)
+    assert n_hand == [(2,), (5,), (11,)]
+    assert n_reserve == []
+    assert hand != n_hand
+    assert reserve != n_reserve
 
-def test_get_top_card_multiple():
-    r_deck = cards.create_deck()
-    deck = r_deck[:]
-    hand = cards.get_top_card(deck, n=3)
-    assert len(hand) == 3
-    assert type(hand) is list
-    assert r_deck != deck
+def test_pull_top_card():
+    deck = [(2,), (5,), (11,)]
+    card = cards.pull_top(deck)
+    assert len(deck) == 2
+    assert card == (11,)
+
+def test_pull_top_three():
+    deck = [(2,), (5,), (11,)]
+    cs = cards.pull_three(deck)
+    assert len(deck) == 0
+    assert type(cs) is list
+    assert cs == [(11,), (5,), (2,)]
+
+def test_pull_top_error():
+    with pytest.raises(cards.OutOfCardsError):
+        cards.pull_three([(3,)])
     
 def test_compare_cards_normal_usage():
     assert cards.compare_cards((4,), (7,)) == 1

@@ -1,5 +1,8 @@
 import random
 
+class OutOfCardsError(Exception):
+    pass
+
 #Tested
 def create_deck():
     """Generates a standard set of 52 playing cards"""
@@ -33,17 +36,34 @@ def deal_cards(deck):
             cpu.append(c)
     return (hum, cpu)
 
+def flip_reserve(hand, reserve):
+    """Take reserve into hand. Does not mutate inputs."""
+
+    n_hand = hand[:]
+    n_reserve = reserve[:]
+    n_hand = n_reserve
+    return (n_hand, [])
+
 #Tested
-def get_top_card(hand, n=1):
-    """Pulls a single card by default, or 3 cards in war mode
-    """
-    if n > 1: 
-        cs = []
-        for i in range(n):
-            cs.append(hand.pop())
-        return cs
+def pull_top(hand):
+    """Return the top card from a hand.
+    Throws OutOfCardsError if there are not enough cards to pull."""
+
+    if len(hand) < 1:
+        raise OutOfCardsError
     else:
         return hand.pop()
+
+
+def pull_three(hand):
+    """Return the top three cards of a given hand as a list.
+    Throws OutOfCardsError if there are not enough cards to pull."""
+
+    if len(hand) < 3:
+        raise OutOfCardsError
+    else:
+        return [hand.pop() for i in range(3)]
+        
 
 #Tested
 def compare_cards(hc, cc):
