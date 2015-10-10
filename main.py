@@ -31,17 +31,17 @@ while True:
     c = cards.get_top_card(cpu)
     
     result = cards.compare_cards(h, c)
-    interface.output("You draw {}, and your opponent shows {}.".format(h, c))
+    print("You draw {}, and your opponent shows {}.".format(h, c))
     pot = [h, c]
     
     if result == -1:
-        interface.output("{} > {} --- You win this round.".format(h, c))
+        print("{} > {} --- You win this round.".format(h, c))
         hreserve.extend(pot)
     elif result == 1:
-        interface.output("{} > {} --- You lose this round.".format(c, h))
+        print("{} > {} --- You lose this round.".format(c, h))
         creserve.extend(pot)
     elif result == 0:
-        interface.output("There is a tie.")
+        print("There is a tie.")
         creserve.extend(pot)
     else:
         assert False, "You dun goofed"
@@ -64,8 +64,8 @@ while True:
             break
 
 if win:
-    interface.output("You win! Well Done!")
+    print("You win! Well Done!")
 else:
-    interface.output("Sorry, you lost!")
+    print("Sorry, you lost!")
 
 

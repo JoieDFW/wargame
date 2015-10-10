@@ -6,8 +6,11 @@ def test_create_deck():
     assert type(deck) is list
     assert len(deck) == 52
     for card in deck:
-        assert card <= 13
-        assert card >= 1
+        assert type(card) is tuple
+        assert type(card[0]) is int
+        assert type(card[1]) is str
+        assert card[0] <= 13
+        assert card[0] >= 1
 
 def test_shuffle():
     deck = cards.create_deck()
@@ -38,9 +41,9 @@ def test_get_top_card_multiple():
     assert r_deck != deck
     
 def test_compare_cards_normal_usage():
-    assert cards.compare_cards(4, 7) == 1
-    assert cards.compare_cards(9, 7) == -1
-    assert cards.compare_cards(5, 5) == 0
-    assert cards.compare_cards(1, 5) == -1
-    assert cards.compare_cards(13, 1) == 1
-    assert cards.compare_cards(1, 1) == 0
+    assert cards.compare_cards((4,), (7,)) == 1
+    assert cards.compare_cards((9,), (7,)) == -1
+    assert cards.compare_cards((5,), (5,)) == 0
+    assert cards.compare_cards((1,), (5,)) == -1
+    assert cards.compare_cards((13,), (1,)) == 1
+    assert cards.compare_cards((1,), (1,)) == 0

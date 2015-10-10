@@ -6,7 +6,13 @@ def create_deck():
     deck = []
     for number in range(1, 53):
         deck.append((number % 13) +1)
-    return deck
+    suit_1 = ["of Spades" for i in range(13)]
+    suit_2 = ["of Diamonds" for i in range(13)]
+    suit_3 = ["of Clubs" for i in range(13)]
+    suit_4 = ["of Hearts" for i in range(13)]
+    suits = suit_1 + suit_2 + suit_3 + suit_4
+    assert len(suits) == 52
+    return list(zip(deck, suits))
 
 #Tested
 def shuffle_cards(deck):
@@ -44,6 +50,8 @@ def compare_cards(hc, cc):
     """Compares the values of the cards to determine the winner 
     of the round
     -1 is a win for human player, 1 is for computer, 0 is tie"""
+    hc = hc[0]
+    cc = cc[0]    
     if hc == 1:
         hc = 14
     if cc == 1:
