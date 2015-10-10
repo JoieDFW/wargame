@@ -36,36 +36,34 @@ def deal_cards(deck):
             cpu.append(c)
     return (hum, cpu)
 
-# Untested
 def flip_reserve(hand, reserve):
-    """Take the reserve cards into your hand after shuffling.
-    This does NOT modify things in place!"""
-
-    if (len(hand) + len(reserve)) < 1:
-        raise Exception("What are you doing?")
+    """Take reserve into hand. Does not mutate inputs."""
 
     n_hand = hand[:]
     n_reserve = reserve[:]
-    n_hand = shuffle_cards(n_reserve)
-    n_reserve = []
-    return (n_hand, n_reserve)
+    n_hand = n_reserve
+    return (n_hand, [])
 
 #Tested
-def pull_top(hand, reserve, n=1):
-    """Pull the top card from your hand. Flip reserve if there are not
-    enough cards left. If there are not enough in the reserve either,
-    throw OutOfCardsError."""
-    #print("N = {}, HAND = {}, RESERVE = {}".format(n, len(hand), len(reserve)))
-    if (len(hand)+len(reserve)) < 1:
-        print("Arrgggh I'm all out!")
-        raise OutOfCardsError()
-    elif len(hand) < 1:
-        (hand, reserve) = flip_reserve(hand, reserve)
+def pull_top(hand):
+    """Return the top card from a hand.
+    Throws OutOfCardsError if there are not enough cards to pull."""
 
-    if n == 1:
-        return hand.pop()
+    if len(hand) < 1:
+        raise OutOfCardsError
     else:
-        return [hand.pop() for i in range(n)]
+        return hand.pop()
+
+
+def pull_three(hand):
+    """Return the top three cards of a given hand as a list.
+    Throws OutOfCardsError if there are not enough cards to pull."""
+
+    if len(hand) < 3:
+        raise OutOfCardsError
+    else:
+        return [hand.pop() for i in range(3)]
+        
 
 #Tested
 def compare_cards(hc, cc):
