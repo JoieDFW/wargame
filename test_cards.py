@@ -31,7 +31,7 @@ def test_deal_cards():
 def test_flip_reserve():
     (hand, reserve) = ([], [(2,), (5,), (11,)])
     (n_hand, n_reserve) = cards.flip_reserve(hand, reserve)
-    assert n_hand == [(2,), (5,), (11,)]
+    assert len(n_hand) == 3
     assert n_reserve == []
     assert hand != n_hand
     assert reserve != n_reserve

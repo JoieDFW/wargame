@@ -8,7 +8,8 @@ def test_play_turn_human_win():
     c_hand = [(8,), (4,), (10,), (2,)]
     h_reserve = []
     c_reserve = []
-    main.play_turn(h_hand, c_hand, h_reserve, c_reserve, [])
+    ((h_hand, h_reserve), (c_hand, c_reserve)) = main.play_turn(
+        (h_hand, h_reserve), (c_hand, c_reserve), [])
     assert len(h_hand) == 3
     assert len(c_hand) == 3
     assert len(h_reserve) == 2
@@ -19,7 +20,8 @@ def test_play_turn_human_win():
     c_hand = [(8,), (4,), (10,), (11,)]
     h_reserve = []
     c_reserve = []
-    main.play_turn(h_hand, c_hand, h_reserve, c_reserve, [])
+    ((h_hand, h_reserve), (c_hand, c_reserve)) = main.play_turn(
+        (h_hand, h_reserve), (c_hand, c_reserve), [])
     assert len(h_hand) == 3
     assert len(c_hand) == 3
     assert len(h_reserve) == 0
@@ -30,7 +32,8 @@ def test_play_turn_war():
     c_hand = [(8,), (4,), (10,), (11,), (7,), (4,), (1,)]
     h_reserve = []
     c_reserve = []
-    main.play_turn(h_hand, c_hand, h_reserve, c_reserve, [])
+    ((h_hand, h_reserve), (c_hand, c_reserve)) = main.play_turn(
+        (h_hand, h_reserve), (c_hand, c_reserve), [])
     assert len(h_hand) == 2
     assert len(c_hand) == 2
     assert len(h_reserve) == 0
@@ -41,7 +44,8 @@ def test_play_turn_double_war():
     c_hand = [(8,), (4,), (10,), (11,), (7,), (4,), (1,), (5,), (3,)]
     h_reserve = []
     c_reserve = []
-    main.play_turn(h_hand, c_hand, h_reserve, c_reserve, [])
+    ((h_hand, h_reserve), (c_hand, c_reserve)) = main.play_turn(
+        (h_hand, h_reserve), (c_hand, c_reserve), [])
     assert len(h_hand) == 0
     assert len(c_hand) == 0
     assert len(h_reserve) == 0

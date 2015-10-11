@@ -41,7 +41,7 @@ def flip_reserve(hand, reserve):
 
     n_hand = hand[:]
     n_reserve = reserve[:]
-    n_hand = n_reserve
+    n_hand = shuffle_cards(n_reserve)
     return (n_hand, [])
 
 #Tested

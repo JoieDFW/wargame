@@ -13,50 +13,47 @@ for card in exampleCards:
     print()
 
 DISABLE_WAIT = True
-
-deck = cards.create_deck()
-deck = cards.shuffle_cards(deck)
-(h_hand, c_hand) = cards.deal_cards(deck)
-
-interface.wait_for_input(DISABLE_WAIT)
+# XXX
+TOTAL_TURNS = 0
 
 # Untested
-def main(h_hand, c_hand, h_reserve, c_reserve):
+def main(human, cpu):
     """Run the game."""
 
     while True:
-        print("\tTOTALS\tH {} + {}\tC {} + {}".format(
-            len(h_hand), len(h_reserve), len(c_hand), len(c_reserve)))
+        print("\tTOTALS\t\tH {} + {}  \tC {} + {}".format(
+            len(human[0]), len(human[1]), len(cpu[0]), len(cpu[1])))
 
         try:
-            results = play_turn(h_hand, c_hand, h_reserve, c_reserve, [])
-            (h_hand, c_hand, h_reserve, c_reserve) = results
+            (human, cpu) = play_turn(human, cpu, [])
         except cards.OutOfCardsError:
             break
 
         interface.wait_for_input(DISABLE_WAIT)  # Set at the top of the script
 
-    if len(h_hand) > len(c_hand):
-        print("You win! Well Done!")
+    if len(human[0]) > len(cpu[0]):
+        print("You win! Well done!")
+        return True
     else:
         print("Sorry, you lost!")
+        return False
 
 
-# Tested
-def play_turn(h_hand, c_hand, h_reserve, c_reserve, pot):
-    """Play one hand of the game. Call recursively to resolve ties.
-    This function DOES modify all arguments in place. """
+# Untested
+def flip_if_needed(player, n=1):
+    (hand, reserve) = player
+    if len(hand) < n:
+        (hand, reserve)= cards.flip_reserve(hand, reserve)
+    return (hand, reserve)
 
-    # XXX Ugh someone please put this code out of its misery
-    if len(h_hand) < 1 and len(h_reserve) < 1:
-        raise cards.OutOfCardsError
-    elif len(h_hand) < 1 and len(h_reserve) >= 1:
-        (h_hand, h_reserve) = cards.flip_reserve(h_hand, h_reserve)
 
-    if len(c_hand) < 1 and len(c_reserve) < 1:
-        raise cards.OutOfCardsError
-    elif len(c_hand) < 1 and len(c_reserve) >= 1:
-        (c_hand, c_reserve) = cards.flip_reserve(c_hand, c_reserve)
+# Lightly Tested
+def play_turn(human, cpu, pot):
+    #XXX
+    global TOTAL_TURNS
+    TOTAL_TURNS += 1
+    (h_hand, h_reserve) = flip_if_needed(human)
+    (c_hand, c_reserve) = flip_if_needed(cpu)
 
     h_card = cards.pull_top(h_hand)
     c_card = cards.pull_top(c_hand)
@@ -64,39 +61,49 @@ def play_turn(h_hand, c_hand, h_reserve, c_reserve, pot):
 
     winner = cards.compare_cards(h_card, c_card)
     if winner == -1:  # Human wins
-        print("{} > {} --- You win this round.".format(h_card, c_card))
-        print("You win {} cards!".format(len(pot)))
-        #print(" WIN", end="")
+        #print("{} > {} --- You win this round.".format(h_card, c_card))
+        #print("You win {} cards!".format(len(pot)))
+        print(" WIN", end="")
         h_reserve.extend(pot)
 
     elif winner == 1:  # Computer wins
-        print("{} > {} --- You lose this round.".format(c_card, h_card))
-        print("You lose {} cards!".format(len(pot)))
-        #print("LOSE", end="")
+        #print("{} > {} --- You lose this round.".format(c_card, h_card))
+        #print("You lose {} cards!".format(len(pot)))
+        print("LOSE", end="")
         c_reserve.extend(pot)
 
     elif winner == 0:  # A tie; a cause for WAR!
-        print("There is a tie.")
-        #print(" TIE", end="")
+        #print("There is a tie.")
+        print(" TIE", end="\n")
 
-        if len(h_hand) < 3 and len(h_reserve) < 3:
-            raise cards.OutOfCardsError
-        elif len(h_hand) < 3 and len(h_reserve) >= 3:
-            (h_hand, h_reserve) = cards.flip_reserve(h_hand, h_reserve)
-
-        if len(c_hand) < 3 and len(c_reserve) < 3:
-            raise cards.OutOfCardsError
-        elif len(c_hand) < 3 and len(c_reserve) >= 3:
-            (c_hand, c_reserve) = cards.flip_reserve(c_hand, c_reserve)
+        (h_hand, h_reserve) = flip_if_needed((h_hand, h_reserve), n=3)
+        (c_hand, c_reserve) = flip_if_needed((c_hand, c_reserve), n=3)
 
         pot.extend(cards.pull_three(h_hand))
         pot.extend(cards.pull_three(c_hand))
 
         # Weeeee, recursion!
-        play_turn(h_hand, c_hand, h_reserve, c_reserve, pot)
-    else:
-        assert False, "Panic!"
+        ((h_hand, h_reserve), (c_hand, c_reserve)) = play_turn(
+            (h_hand, h_reserve), (c_hand, c_reserve), pot)
 
-    return (h_hand, c_hand, h_reserve, c_reserve)
+    return ((h_hand, h_reserve), (c_hand, c_reserve))
 
-if __name__ == '__main__': main(h_hand, c_hand, [], [])
+
+if __name__ == '__main__':
+    won_games = 0
+    lost_games = 0
+    for i in range(1000):
+        deck = cards.create_deck()
+        deck = cards.shuffle_cards(deck)
+        (h_hand, c_hand) = cards.deal_cards(deck)
+
+        interface.wait_for_input(DISABLE_WAIT)
+        won = main((h_hand, []), (c_hand, []))
+        if won:
+            won_games += 1
+        else:
+            lost_games += 1
+
+    print("Games won:  {}".format(won_games))
+    print("Games lost: {}".format(lost_games))
+    print("Total number of turns: {}".format(TOTAL_TURNS))
