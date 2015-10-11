@@ -5,15 +5,14 @@
 import cards
 import interface
 
-exampleCards = cards.create_deck()
-for card in exampleCards:
-    picture = interface.pic_repr(card)
-    for line in picture:
-        print(line)
-    print()
+#exampleCards = cards.create_deck()
+#for card in exampleCards:
+#    picture = interface.pic_repr(card)
+#    for line in picture:
+#        print(line)
+#    print()
 
-DISABLE_WAIT = True
-# XXX
+DISABLE_WAIT = False
 TOTAL_TURNS = 0
 
 # Untested
@@ -21,8 +20,8 @@ def main(human, cpu):
     """Run the game."""
 
     while True:
-        print("\tTOTALS\t\tH {} + {}  \tC {} + {}".format(
-            len(human[0]), len(human[1]), len(cpu[0]), len(cpu[1])))
+        #print("\tTOTALS\t\tH {} + {}  \tC {} + {}".format(
+        #    len(human[0]), len(human[1]), len(cpu[0]), len(cpu[1])))
 
         try:
             (human, cpu) = play_turn(human, cpu, [])
@@ -49,32 +48,39 @@ def flip_if_needed(player, n=1):
 
 # Lightly Tested
 def play_turn(human, cpu, pot):
-    #XXX
-    global TOTAL_TURNS
-    TOTAL_TURNS += 1
+    #global TOTAL_TURNS
+    #TOTAL_TURNS += 1
     (h_hand, h_reserve) = flip_if_needed(human)
     (c_hand, c_reserve) = flip_if_needed(cpu)
 
     h_card = cards.pull_top(h_hand)
     c_card = cards.pull_top(c_hand)
     pot.extend([h_card, c_card])
+    
+    h_pic = interface.pic_repr(h_card)
+    c_pic = interface.pic_repr(c_card)
+    for (h_line, c_line) in zip(h_pic, c_pic):
+        print("{}\t\t\t{}".format(h_line, c_line))
+    print("You play the above \tComputer plays the above")
 
     winner = cards.compare_cards(h_card, c_card)
     if winner == -1:  # Human wins
-        #print("{} > {} --- You win this round.".format(h_card, c_card))
-        #print("You win {} cards!".format(len(pot)))
-        print(" WIN", end="")
+        print("{} > {} --- You win this round.".format(h_card, c_card))
+        print("You win {} cards!".format(len(pot)))
+        #print(" WIN", end="")
         h_reserve.extend(pot)
 
     elif winner == 1:  # Computer wins
-        #print("{} > {} --- You lose this round.".format(c_card, h_card))
-        #print("You lose {} cards!".format(len(pot)))
-        print("LOSE", end="")
+        print("{} > {} --- You lose this round.".format(c_card, h_card))
+        print("You lose {} cards!".format(len(pot)))
+        #print("LOSE", end="")
         c_reserve.extend(pot)
 
     elif winner == 0:  # A tie; a cause for WAR!
-        #print("There is a tie.")
-        print(" TIE", end="\n")
+        print("There is a tie.")
+        print("Declare War!")
+        interface.wait_for_input()
+        #print(" TIE", end="\n")
 
         (h_hand, h_reserve) = flip_if_needed((h_hand, h_reserve), n=3)
         (c_hand, c_reserve) = flip_if_needed((c_hand, c_reserve), n=3)
@@ -90,20 +96,10 @@ def play_turn(human, cpu, pot):
 
 
 if __name__ == '__main__':
-    won_games = 0
-    lost_games = 0
-    for i in range(1000):
-        deck = cards.create_deck()
-        deck = cards.shuffle_cards(deck)
-        (h_hand, c_hand) = cards.deal_cards(deck)
 
-        interface.wait_for_input(DISABLE_WAIT)
-        won = main((h_hand, []), (c_hand, []))
-        if won:
-            won_games += 1
-        else:
-            lost_games += 1
+    deck = cards.create_deck()
+    deck = cards.shuffle_cards(deck)
+    (h_hand, c_hand) = cards.deal_cards(deck)
 
-    print("Games won:  {}".format(won_games))
-    print("Games lost: {}".format(lost_games))
-    print("Total number of turns: {}".format(TOTAL_TURNS))
+    interface.wait_for_input(DISABLE_WAIT)
+    won = main((h_hand, []), (c_hand, []))

@@ -2,7 +2,7 @@
 # War -> Interface
 
 # Tested
-def wait_for_input(disabled=False, prompt=">>> "):
+def wait_for_input(disabled=False, prompt=">>> \n"):
     """Return nothing only after user input.
     Function can be disabled by argument for testing purposes."""
 
